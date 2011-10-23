@@ -1,0 +1,75 @@
+
+p.xdoc {
+	font-size: 12px;
+}
+
+h3 {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+div.comments {
+	color: green;
+}
+
+div.output
+{
+	border: 1px solid #bfbfbf;
+	width: 95%;
+	position: relative;
+	left: 15px;
+	font-family: Monaco;
+	font-size: 12px;
+}
+
+table {
+	border-collapse:collapse;
+	border-style: solid;
+	border-width: 1px;
+}
+
+#excTable {
+	border-color: #89200c;
+}
+
+tr.Arg {
+	background-color: lightgray;
+}
+
+tr.Exc {
+	background-color: #c2310b;
+    color: white;
+}
+
+td {	
+	padding-left: 3px;
+	font: 12px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+#container {
+	margin-left: -40px;
+}
+
+#container li {
+   background: url(Media/csg-4e90c168d6cb2.png) no-repeat top left;
+   display: inline;
+   margin-right: 15px;
+}
+
+#container .AddArgument_btn{ background-position: 0 0; padding-left: 96px; padding-bottom: 11px; }
+#container .AddArgument_dwn{ background-position: -97px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .AddArgument_ovr{ background-position: -194px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .AddClass_btn{ background-position: -291px 0; width: 71px; height: 28px; } 
+#container .AddClass_dwn{ background-position: -363px 0; width: 71px; height: 28px; } 
+#container .AddClass_ovr{ background-position: -435px 0; width: 71px; height: 28px; } 
+#container .AddException_btn{ background-position: -507px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .AddException_dwn{ background-position: -604px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .AddException_ovr{ background-position: -701px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .DelArgument_btn{ background-position: -798px 0; width: 96px; height: 28px; } 
+#container .DelArgument_dwn{ background-position: -895px 0; width: 96px; height: 28px; } 
+#container .DelArgument_ovr{ background-position: -992px 0; width: 96px; height: 28px; } 
+#container .DelClass_btn{ background-position: -1089px 0; width: 71px; height: 28px; } 
+#container .DelClass_dwn{ background-position: -1161px 0; width: 71px; height: 28px; } 
+#container .DelClass_ovr{ background-position: -1233px 0; width: 71px; height: 28px; } 
+#container .DelException_btn{ background-position: -1305px 0; width: 96px; height: 28px; } 
+#container .DelException_dwn{ background-position: -1402px 0; width: 96px; height: 28px; } 
+#container .DelException_ovr{ background-position: -1499px 0; width: 96px; height: 28px; }

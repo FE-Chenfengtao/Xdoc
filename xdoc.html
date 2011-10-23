@@ -1,0 +1,72 @@
+<p class="xdoc">Options: <br/><br/>
+<input id="script" type="checkbox" checked="checked"/>Allow Multi-line comment
+</p>
+<h3>Add a method</h3>
+<div>
+    <select id="type">
+        <option id="class">+</option>
+        <option id="instance" selected="selected">-</option>
+    </select>(
+    <select id="return">
+        <option id="void">void</option>
+        <option id="id">id</option>
+        <option id="NSArray">NSArray *</option>
+		<option id="NSString">NSString *</option>
+		<option id="NSUInteger">NSUInteger</option>
+        <option id="other">other</option>
+    </select>)
+    <input class="hideMe" type="text" id="returnedType" />
+    <input type="text" id="fctName" value="foo" />;
+	<ul id="container">
+		<li type="Button" class="AddArgument_btn" name="arg"></li>
+		<li type="Button" class="AddException_btn" name="exc"></li>
+	</ul>
+    <table id="argTable">
+		<tbody>
+        <tr class="ArgTemplate">
+            <td><a href="#"><img class="DeleteArg" src="Media/delete.png" /></a></td>
+			<td>Type: <select id="argType">
+					<option>void</option>
+					<option>id</option>
+					<option>NSArray *</option>
+					<option>NSString *</option>
+					<option>NSUInteger</option>
+					<option>other</option>
+				</select>
+			<input class="hideMe" type="text" id="argTypeCustom" value="objType *"/></td>
+			<td>Name: <input type="text" id="argName" value="argName"/></td>
+			<td>Label (optional): <input type="text" id="argLabel" value=""/></td>
+			<td>Discussion: <input type="text" id="argDesc" value="Your comments here"/></td>
+        </tr>
+		</tbody>
+    </table>
+    <table id="excTable">
+		<tbody>
+        <tr class="ExcTemplate">
+            <td><a href="#"><img class="DeleteExc" src="Media/delete.png" /></a></td>
+			<td>Type: <select id="excType">
+                <option>NSException</option>
+                <option>other</option>
+            </select>
+                <input class="hideMe" type="text" id="excTypeCustom" value="excType"/></td>
+			<td>Name: <input type="text" id="excName" value="excName"/></td>
+			<td>Discussion: <input type="text" id="excDesc" value="Your comments here"/></td>
+        </tr>
+		</tbody>
+    </table>
+	<p><input type="checkbox" id="addDiscussion"/> Discussion: <input type="text" id="funcDesc" size="92" value="Enter discussion here"/></p>
+	<p><input type="checkbox" id="addAbstract"/> Abstract: <input type="text" name="abstract" value="Enter abstract here" disabled/></p>
+</div>
+<div>
+	<p>Definition: </p>
+	<div id="definition" class="output">
+		<div class="comments"></div>
+		<div class="definition"></div>
+	</div>
+	<br/>
+	<p>Source: </p>
+	<div id="source" class="output">
+		<div class="comments"></div>
+		<div class="code"></div>
+	</div>
+</div>
