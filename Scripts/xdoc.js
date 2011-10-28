@@ -36,7 +36,13 @@ function updateHeaderDocs() {
 	$("div.comments").html(output);
 }
 
-function updateCode() {
+function updateCode()
+{
+	var language = $("input[name=language]:checked").val();
+	return (language == "ObjC" ? updateObjCCode():updateCppCode());
+}
+
+function updateObjCCode() {
     var output = $("#type option:selected").text() + " (" + $("#returnedType").attr("value") + ")" + $("#fctName").attr("value");
 	
 	/* Arguments */
@@ -86,12 +92,41 @@ function updateCode() {
 		}
 		output += "<br/>}<br/><br/>";
 
-    $("div.code").html(output);
+    return output;
+}
+
+function updateCppCode() {
+    var output = $("#returnedType").attr("value") + " " + $("#fctName").attr("value") + "(";
+	
+	/* Arguments */
+	var i;
+	var tbodyArgs = $("tbody", $("#argTable"));
+	var nbItems = tbodyArgs[0].childElementCount;
+	for (i=1; i < nbItems; i++) {
+		var currentRow = $("tr", tbodyArgs).eq(i);
+		var argType = $("#argType", currentRow).attr("value");
+		if (argType == "other") {
+			output += $("#argTypeCustom", currentRow).attr("value") + " ";
+		} else {
+			output += $("#argType", currentRow).attr("value") + " ";
+		}
+		output += $("#argName", currentRow).attr("value");
+		output += ", ";
+	}
+	
+	output = (nbItems>1?output.substring(0, output.length - 2):output);
+	
+	$("div.definition").html(output + ");<br/><br/>");
+	
+	output += ")<br/>{";
+	output += "<br/>}<br/><br/>";
+	
+	return output;
 }
 
 function updateSnippet() {
 	updateHeaderDocs();
-	updateCode();
+	$("div.code").html(updateCode());
 }
 
 function addParameter(prefix) {
