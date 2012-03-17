@@ -245,7 +245,7 @@ $("li[type=Button]").mousedown( function() {
 	$(this).removeClass(oldClass);
 	$(this).addClass(newClass);
 	
-	addParameter($(this).attr("name"));
+	addParameter($(this).attr("id"));
 	
 	updateSnippet();
 });

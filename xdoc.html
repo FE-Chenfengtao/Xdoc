@@ -1,77 +1,96 @@
-<p>
-Language:<br/><br/> 
-<input type="radio" name="language" value="ObjC" checked>Objective-C</input>
-<input type="radio" name="language" value="C++">C++</input>
-</p>
-<p class="xdoc">Options: <br/><br/>
-<input id="script" type="checkbox" checked="checked"/>Allow Multi-line comment
-</p>
-<h3>Add a method</h3>
-<div>
-    <select id="type">
-        <option id="class">+</option>
-        <option id="instance" selected="selected">-</option>
-    </select>(
-    <select id="return">
-        <option id="void">void</option>
-        <option id="id">id</option>
-        <option id="NSArray">NSArray *</option>
-		<option id="NSString">NSString *</option>
-		<option id="NSUInteger">NSUInteger</option>
-        <option id="other">other</option>
-    </select>)
-    <input class="hideMe" type="text" id="returnedType" />
-    <input type="text" id="fctName" value="foo" />;
-	<ul id="container">
-		<li type="Button" class="AddArgument_btn" name="arg"></li>
-		<li type="Button" class="AddException_btn" name="exc"></li>
-	</ul>
-    <table id="argTable">
-		<tbody>
-        <tr class="ArgTemplate">
-            <td><a href="#"><img class="DeleteArg" src="Media/delete.png" /></a></td>
-			<td>Type: <select id="argType">
-					<option>id</option>
-					<option>NSArray *</option>
-					<option>NSString *</option>
-					<option>NSUInteger</option>
-					<option>other</option>
-				</select>
-			<input class="hideMe" type="text" id="argTypeCustom" value="objType *"/></td>
-			<td>Name: <input type="text" id="argName" value="argName"/></td>
-			<td>Label (optional): <input type="text" id="argLabel" value=""/></td>
-			<td>Discussion: <input type="text" id="argDesc" value="Your comments here"/></td>
-        </tr>
-		</tbody>
-    </table>
-    <table id="excTable">
-		<tbody>
-        <tr class="ExcTemplate">
-            <td><a href="#"><img class="DeleteExc" src="Media/delete.png" /></a></td>
-			<td>Type: <select id="excType">
-                <option>NSException</option>
-                <option>other</option>
-            </select>
-                <input class="hideMe" type="text" id="excTypeCustom" value="excType"/></td>
-			<td>Name: <input type="text" id="excName" value="excName"/></td>
-			<td>Discussion: <input type="text" id="excDesc" value="Your comments here"/></td>
-        </tr>
-		</tbody>
-    </table>
-	<p><input type="checkbox" id="addDiscussion"/> Discussion: <input type="text" id="funcDesc" size="92" value="Enter discussion here"/></p>
-	<p><input type="checkbox" id="addAbstract"/> Abstract: <input type="text" name="abstract" value="Enter abstract here" disabled/></p>
-</div>
-<div>
-	<p>Definition: </p>
-	<div id="definition" class="output">
-		<div class="comments"></div>
-		<div class="definition"></div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>		
+    <meta name="created" content="ven., 25 févr. 2011 13:50:28 GMT"/>
+    <meta name="description" content="une page XHTML"/>
+    <meta name="keywords" content="keyword"/>
+	<link rel="stylesheet" type="text/css" href="xdoc.css"/>
+   	<script src="Scripts/jQuery/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="Scripts/xdoc.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		main();
+    	});
+    </script>
+    <title>Page</title>    
+  </head>
+  <body>
+	<p>
+	Language:<br/><br/> 
+	<input type="radio" name="language" value="ObjC" checked="checked"/>Objective-C
+	<input type="radio" name="language" value="C++"/>C++
+	</p>
+	<p class="xdoc">Options: <br/><br/>
+	<input id="script" type="checkbox" checked="checked"/>Allow Multi-line comment
+	</p>
+	<h3>Add a method</h3>
+	<div>
+	    <select id="type">
+	        <option id="class">+</option>
+	        <option id="instance" selected="selected">-</option>
+	    </select>(
+	    <select id="return">
+	        <option id="void">void</option>
+	        <option id="id">id</option>
+	        <option id="NSArray">NSArray *</option>
+			<option id="NSString">NSString *</option>
+			<option id="NSUInteger">NSUInteger</option>
+	        <option id="other">other</option>
+	    </select>)
+	    <input class="hideMe" type="text" id="returnedType" />
+	    <input type="text" id="fctName" value="foo" />;
+		<ul id="container">
+			<li type="Button" class="AddArgument_btn" id="arg"></li>
+			<li type="Button" class="AddException_btn" id="exc"></li>
+		</ul>
+	    <table id="argTable">
+			<tbody>
+	        <tr class="ArgTemplate">
+	            <td><a href="#"><img class="DeleteArg" src="Media/delete.png" alt="delete picture" /></a></td>
+				<td>Type: <select id="argType">
+						<option>id</option>
+						<option>NSArray *</option>
+						<option>NSString *</option>
+						<option>NSUInteger</option>
+						<option>other</option>
+					</select>
+				<input class="hideMe" type="text" id="argTypeCustom" value="objType *"/></td>
+				<td>Name: <input type="text" id="argName" value="argName"/></td>
+				<td>Label (optional): <input type="text" id="argLabel" value=""/></td>
+				<td>Discussion: <input type="text" id="argDesc" value="Your comments here"/></td>
+	        </tr>
+			</tbody>
+	    </table>
+	    <table id="excTable">
+			<tbody>
+	        <tr class="ExcTemplate">
+	            <td><a href="#"><img class="DeleteExc" src="Media/delete.png" alt="delete picture"/></a></td>
+				<td>Type: <select id="excType">
+	                <option>NSException</option>
+	                <option>other</option>
+	            </select>
+	                <input class="hideMe" type="text" id="excTypeCustom" value="excType"/></td>
+				<td>Name: <input type="text" id="excName" value="excName"/></td>
+				<td>Discussion: <input type="text" id="excDesc" value="Your comments here"/></td>
+	        </tr>
+			</tbody>
+	    </table>
+		<p><input type="checkbox" id="addDiscussion"/> Discussion: <input type="text" id="funcDesc" size="92" value="Enter discussion here"/></p>
+		<p><input type="checkbox" id="addAbstract"/> Abstract: <input type="text" name="abstract" value="Enter abstract here" disabled="disabled"/></p>
 	</div>
-	<br/>
-	<p>Source: </p>
-	<div id="source" class="output">
-		<div class="comments"></div>
-		<div class="code"></div>
+	<div>
+		<p>Definition: </p>
+		<div id="definition" class="output">
+			<div class="comments"></div>
+			<div class="definition"></div>
+		</div>
+		<br/>
+		<p>Source: </p>
+		<div id="source" class="output">
+			<div class="comments"></div>
+			<div class="code"></div>
+		</div>
 	</div>
-</div>
-<p></p>
+  </body>
+ </html>
