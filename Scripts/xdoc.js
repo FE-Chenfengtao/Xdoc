@@ -207,7 +207,7 @@ $("#type").change(function() {
 
 $("#addDiscussion").change(function() {
 	if ($(this).attr("checked")) {
-		$("#funcDesc").attr("disabled", "");
+		$("#funcDesc").removeAttr("disabled");
 		$("#funcDesc").attr("value","Enter discussion here");
 	} else {
 		$("#funcDesc").attr("disabled", "disabled");
@@ -217,7 +217,7 @@ $("#addDiscussion").change(function() {
 
 $("#addAbstract").change(function() {
 	if ($(this).attr("checked")) {
-		$("input[name='abstract']").attr("disabled", "");
+		$("input[name='abstract']").removeAttr("disabled");
 		$("input[name='abstract']").attr("value","Enter abstract here");
 	} else {
 		$("input[name='abstract']").attr("disabled", "disabled");
