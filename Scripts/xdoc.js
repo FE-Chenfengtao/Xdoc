@@ -1,3 +1,82 @@
+var methodName = "";
+var isMemberMethod = true;
+var returnType = "";
+var argumentArray = [];
+var argumentTypes = [];
+var labelArray = [];
+var returnTypesSupported = [ "void", "id", "NSArray", "NSString",  "NSUInteger" ];
+var argTypesSupported = [ "id", "NSArray", "NSString",  "NSUInteger" ];
+
+function removeArguments() {
+	console.log("Remove all arguments");
+	var tbodyArgs = $("tbody", $("#argTable"));
+	$("tr", tbodyArgs).each(function() { 
+		if ($(this).attr("class") != "ArgTemplate") {
+			$(this).remove(); 
+		}
+	});
+
+	argumentTypes = [];
+	argumentArray = [];
+	labelArray = [];
+	updateSnippet();
+}
+
+function returnTypeSupported(returnType) {
+	for (i=0; i < returnTypesSupported.length; i++) {
+		if (returnType == returnTypesSupported[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function argTypeSupported(argType) {
+	for (i=0; i < argTypesSupported.length; i++) {
+		if (argType == argTypesSupported[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function updateFromParsingCode() {
+	if (isMemberMethod) {
+		$("#instance").attr("selected", "selected");
+	} else {
+		$("#class").attr("selected", "selected");
+	}
+	var cleanedReturnType = cleanTypeFromPointer(returnType);
+	console.log(cleanedReturnType + "(" + returnType + ")");
+	if (returnTypeSupported(cleanedReturnType)) {
+		$("#"+cleanedReturnType).attr("selected", "selected");
+	} else {
+		$("#other").attr("selected","selected");
+		$("#returnedType").attr("value", returnType);
+	}
+	$("#fctName").attr("value", methodName);
+	var ArgCount = argumentArray.length;
+	var tbodyArgs = $("tbody", $("#argTable"));
+	for (iterArg=0; iterArg < ArgCount; iterArg++) {
+		var indexArgTable = iterArg + 1;
+	    addParameter("arg");
+	    var cleanedArgType = cleanTypeFromPointer(argumentTypes[iterArg]);
+	    console.log(iterArg+":"+cleanedArgType+"(" + argumentTypes[iterArg] +")" + argumentArray[iterArg]);
+	    if (argTypeSupported(cleanedArgType)) {
+	    	console.log(iterArg+":argument type supported: " + cleanedArgType);
+	    	$("#arg"+ cleanedArgType, $("tr", tbodyArgs).eq(indexArgTable)).attr("selected", "selected");
+	    } else {
+	    	console.log(iterArg+":argument type not supported("+argumentTypes[iterArg]+": choosing other");
+	    	$("#argOther", $("tr", tbodyArgs).eq(indexArgTable)).attr("selected","selected");
+	    	$("#argTypeCustom", $("tr", tbodyArgs).eq(indexArgTable)).attr("value", argumentTypes[iterArg]);
+	    }
+	    $("#argName", $("tr", tbodyArgs).eq(indexArgTable)).attr("value", argumentArray[iterArg]);
+	    if (labelArray[iterArg].length > 0) {
+	    	$("#argLabel", $("tr", tbodyArgs).eq(indexArgTable)).attr("value", labelArray[iterArg]);
+	    }
+	}
+	updateSnippet();
+}
 
 function updateHeaderDocs() {
 	var multiLine = $("#script").attr("checked");
@@ -12,7 +91,7 @@ function updateHeaderDocs() {
 	}
 	var i;
 	var tbodyArgs = $("tbody", $("#argTable"));
-	var nbItems = tbodyArgs[0].childElementCount;
+	var nbItems = (tbodyArgs[0].childElementCount!==undefined) ? tbodyArgs[0].childElementCount : 0;
 	for (i=1; i < nbItems; i++) {
 		var currentRow = $("tr", tbodyArgs).eq(i);
 		output += "@param ";
@@ -138,6 +217,55 @@ function addParameter(prefix) {
 	.show();
 }
 
+function cleanTypeFromPointer(strType) {
+	if (strType.charAt(strType.length-1) == "*") {
+		strType = strType.replace(/ /, "");
+		return strType.substring(0, strType.length-1);
+	}
+	return strType;
+}
+
+function parseObjC(value) {
+	removeArguments();
+    isMemberMethod = ((value.search("-") >= 0) ? true : false);
+    indexOfLeftParenthesis = value.search('\\(');
+    indexOfRightParenthesis = value.search('\\)');
+    returnType = value.substring(indexOfLeftParenthesis+1, indexOfRightParenthesis);
+    var firstArg = value.search(":");
+    if (firstArg == -1) {
+        methodName = value.substring(indexOfRightParenthesis+1);
+    } else {
+        methodName = value.substring(indexOfRightParenthesis+1, firstArg);
+        var argTypes = value.substring(firstArg+1);
+        labelArray.push("");
+        var iterArg = 0;
+        var stop = false;
+        while (!stop) {
+            indexOfRightParenthesis = argTypes.search('\\)');
+            var nextArg = argTypes.search(':');
+            argumentTypes[iterArg] = argTypes.substring(1, indexOfRightParenthesis);
+            if (nextArg != -1) {
+                var tmp = argTypes.substring(indexOfRightParenthesis+1, nextArg);
+                var sLabel = tmp.search(/ /);
+                if (sLabel != -1 && sLabel < tmp.length - 1) {
+                    argumentArray[iterArg] = tmp.substring(0, sLabel);
+                    labelArray.push(tmp.substring(sLabel+1, nextArg));
+                } else {
+                    labelArray.push("none");
+                    argumentArray[iterArg] = argTypes.substring(indexOfRightParenthesis+1, nextArg);
+
+                } 
+                argTypes = argTypes.substring(nextArg+1);
+               iterArg++;
+            } else {
+                argumentArray[iterArg] = argTypes.substring(indexOfRightParenthesis+1);
+                stop = true;
+            }
+        }
+    }
+	updateFromParsingCode();
+}
+
 function main() {
 
 $(".hideMe").hide();
@@ -245,7 +373,7 @@ $("li[type=Button]").mousedown( function() {
 	$(this).removeClass(oldClass);
 	$(this).addClass(newClass);
 	
-	addParameter($(this).attr("id"));
+	addParameter($(this).attr("name"));
 	
 	updateSnippet();
 });
@@ -262,4 +390,13 @@ $("input").live("change", function() {
 });
 
 updateSnippet();
+
+$("input[name='fctSource']").live("change", function() {
+	parseObjC($(this).attr("value"));
+});
+
+$("#RemoveArgs").click(function() {
+	removeArguments();
+});
+
 }

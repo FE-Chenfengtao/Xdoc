@@ -26,34 +26,42 @@
 	</p>
 	<h3>Add a method</h3>
 	<div>
-	    <select id="type">
-	        <option id="class">+</option>
-	        <option id="instance" selected="selected">-</option>
-	    </select>(
-	    <select id="return">
-	        <option id="void">void</option>
-	        <option id="id">id</option>
-	        <option id="NSArray">NSArray *</option>
-			<option id="NSString">NSString *</option>
-			<option id="NSUInteger">NSUInteger</option>
-	        <option id="other">other</option>
-	    </select>)
-	    <input class="hideMe" type="text" id="returnedType" />
-	    <input type="text" id="fctName" value="foo" />;
+		<ul id="inputMethod">
+			<li>
+			    <select id="type">
+			        <option id="class">+</option>
+			        <option id="instance" selected="selected">-</option>
+			    </select>(
+			    <select id="return">
+			        <option id="void">void</option>
+			        <option id="id">id</option>
+			        <option id="NSArray">NSArray *</option>
+					<option id="NSString">NSString *</option>
+					<option id="NSUInteger">NSUInteger</option>
+			        <option id="other">other</option>
+			    </select>)
+			    <input class="hideMe" type="text" id="returnedType" />
+			    <input type="text" id="fctName" value="foo" />;
+		    </li>
+	    	<li>- or -</li>
+	    	<li>Paste your method signature (ObjC only supported): <input type="text" name="fctSource" size="217"/></li>
+	    </ul>
+	    
 		<ul id="container">
 			<li type="Button" class="AddArgument_btn" id="arg"></li>
 			<li type="Button" class="AddException_btn" id="exc"></li>
 		</ul>
+		
 	    <table id="argTable">
 			<tbody>
 	        <tr class="ArgTemplate">
 	            <td><a href="#"><img class="DeleteArg" src="Media/delete.png" alt="delete picture" /></a></td>
 				<td>Type: <select id="argType">
-						<option>id</option>
-						<option>NSArray *</option>
-						<option>NSString *</option>
-						<option>NSUInteger</option>
-						<option>other</option>
+						<option id="argid">id</option>
+						<option id="argNSArray">NSArray *</option>
+						<option id="argNSString">NSString *</option>
+						<option id="argNSUInteger">NSUInteger</option>
+						<option id="argOther">other</option>
 					</select>
 				<input class="hideMe" type="text" id="argTypeCustom" value="objType *"/></td>
 				<td>Name: <input type="text" id="argName" value="argName"/></td>

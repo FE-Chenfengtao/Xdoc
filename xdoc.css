@@ -1,10 +1,5 @@
-
-p.xdoc {
-	font-size: 12px;
-}
-
-h3 {
-	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+body {
+	font: 12px "Lucida Grande", Arial, Helvetica, Geneva, sans-serif;
 }
 
 div.comments {
@@ -55,15 +50,24 @@ td {
    margin-right: 15px;
 }
 
-#container .AddArgument_btn{ background-position: 0 0; padding-left: 96px; padding-bottom: 11px; }
-#container .AddArgument_dwn{ background-position: -97px 0; padding-left: 96px; padding-bottom: 11px; } 
-#container .AddArgument_ovr{ background-position: -194px 0; padding-left: 96px; padding-bottom: 11px; } 
+#inputMethod li {
+	list-style-type:none;
+	font: 12px Lucida Grande;
+}
+
+#inputMethod {
+	-webkit-padding-start: 0px;
+}
+
+#container .AddArgument_btn{ background-position: 0 0; padding-left: 96px; padding-bottom: 15px; }
+#container .AddArgument_dwn{ background-position: -97px 0; padding-left: 96px; padding-bottom: 15px; } 
+#container .AddArgument_ovr{ background-position: -194px 0; padding-left: 96px; padding-bottom: 15px; } 
 #container .AddClass_btn{ background-position: -291px 0; width: 71px; height: 28px; } 
 #container .AddClass_dwn{ background-position: -363px 0; width: 71px; height: 28px; } 
 #container .AddClass_ovr{ background-position: -435px 0; width: 71px; height: 28px; } 
-#container .AddException_btn{ background-position: -507px 0; padding-left: 96px; padding-bottom: 11px; } 
-#container .AddException_dwn{ background-position: -604px 0; padding-left: 96px; padding-bottom: 11px; } 
-#container .AddException_ovr{ background-position: -701px 0; padding-left: 96px; padding-bottom: 11px; } 
+#container .AddException_btn{ background-position: -507px 0; padding-left: 96px; padding-bottom: 15px; } 
+#container .AddException_dwn{ background-position: -604px 0; padding-left: 96px; padding-bottom: 15px; } 
+#container .AddException_ovr{ background-position: -701px 0; padding-left: 96px; padding-bottom: 15px; } 
 #container .DelArgument_btn{ background-position: -798px 0; width: 96px; height: 28px; } 
 #container .DelArgument_dwn{ background-position: -895px 0; width: 96px; height: 28px; } 
 #container .DelArgument_ovr{ background-position: -992px 0; width: 96px; height: 28px; } 
