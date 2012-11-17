@@ -1,25 +1,42 @@
-var methodName = "";
+var methodName = "foo";
 var isMemberMethod = true;
-var returnType = "";
+var returnType = "void";
 var argumentArray = [];
 var argumentTypes = [];
 var labelArray = [];
 var returnTypesSupported = [ "void", "id", "NSArray", "NSString",  "NSUInteger" ];
 var argTypesSupported = [ "id", "NSArray", "NSString",  "NSUInteger" ];
 
-function removeArguments() {
-	console.log("Remove all arguments");
+function updateMethodSource() {
+	var methodSource = (isMemberMethod ? "-" : "+");
+	methodSource += "("+returnType+")"+methodName;
 	var tbodyArgs = $("tbody", $("#argTable"));
-	$("tr", tbodyArgs).each(function() { 
-		if ($(this).attr("class") != "ArgTemplate") {
-			$(this).remove(); 
-		}
+	var firstLabel = "";
+	if (labelArray.length > 1) {
+		firstLabel = labelArray[1];
+	}
+	var argCount = argumentArray.length;
+	for (i=0; i < argCount; i++) {
+		methodSource += labelArray[i+1] + ":(" + argumentTypes[i] + ")" + argumentArray[i] + " ";
+	}
+	if (argCount > 0) {
+		methodSource = methodSource.substring(0, methodSource.length-1);
+	}
+	console.log("Updating method source: " + methodSource + " method name:"+methodName+firstLabel);
+	$("#fctSource").attr("value", methodSource);
+	$("#fctName").attr("value", methodName+firstLabel);
+}
+
+function removeArguments() {
+	console.log("remove all arguments");
+	var tbodyArgs = $("tbody", $("#argTable"));
+	$(".Arg", tbodyArgs).each(function() { 
+		$(this).remove();
 	});
 
 	argumentTypes = [];
 	argumentArray = [];
 	labelArray = [];
-	updateSnippet();
 }
 
 function returnTypeSupported(returnType) {
@@ -41,16 +58,18 @@ function argTypeSupported(argType) {
 }
 
 function updateFromParsingCode() {
+	console.log("updateFromParsingCode");
 	if (isMemberMethod) {
 		$("#instance").attr("selected", "selected");
 	} else {
 		$("#class").attr("selected", "selected");
 	}
 	var cleanedReturnType = cleanTypeFromPointer(returnType);
-	console.log(cleanedReturnType + "(" + returnType + ")");
 	if (returnTypeSupported(cleanedReturnType)) {
+		console.log("return type supported: " + cleanedReturnType);
 		$("#"+cleanedReturnType).attr("selected", "selected");
 	} else {
+		console.log("return type not supported("+returnType+"): choosing other");
 		$("#other").attr("selected","selected");
 		$("#returnedType").attr("value", returnType);
 	}
@@ -66,7 +85,7 @@ function updateFromParsingCode() {
 	    	console.log(iterArg+":argument type supported: " + cleanedArgType);
 	    	$("#arg"+ cleanedArgType, $("tr", tbodyArgs).eq(indexArgTable)).attr("selected", "selected");
 	    } else {
-	    	console.log(iterArg+":argument type not supported("+argumentTypes[iterArg]+": choosing other");
+	    	console.log(iterArg+":argument type not supported("+argumentTypes[iterArg]+"): choosing other");
 	    	$("#argOther", $("tr", tbodyArgs).eq(indexArgTable)).attr("selected","selected");
 	    	$("#argTypeCustom", $("tr", tbodyArgs).eq(indexArgTable)).attr("value", argumentTypes[iterArg]);
 	    }
@@ -79,10 +98,24 @@ function updateFromParsingCode() {
 }
 
 function updateHeaderDocs() {
+	console.log("updateHeaderDocs");
 	var multiLine = $("#script").attr("checked");
 	var output; if (multiLine) { output = "/*! <br/><br/>" } else { output = "# /*! <br/>#<br/># "; }
 	var testLabel = $("#argLabel", $("tr", $("tbody", $("#argTable"))).eq(1)).attr("value");
-	output += "@method " + $("#fctName").attr("value") + ((testLabel!==undefined) ? (testLabel) : "" ) + "<br/>"; if (!multiLine) { output += "# "; }
+	output += "@method " + $("#fctName").attr("value") + ((testLabel!==undefined) ? (testLabel) : " " );
+	var i;
+	var tbodyArgs = $("tbody", $("#argTable"));
+	var nbItems = tbodyArgs[0].childElementCount;
+	for (i=1; i < nbItems; i++) {
+		var currentLabel = "";
+		if (i > 1) {
+			var currentRow = $("tr", tbodyArgs).eq(i);
+			currentLabel = $("#argLabel", currentRow).attr("value");
+		}
+		output += currentLabel + ":";
+	}
+	output += "<br/>"; if (!multiLine) { output += "# "; }
+	
 	if ($("#addDiscussion").attr("checked")) {
 		output += "@discussion " + $("#funcDesc").attr("value") + "<br/>"; if (!multiLine) { output += "# "; }
 	}
@@ -108,9 +141,12 @@ function updateHeaderDocs() {
 		output += $("#excDesc", currentRow).attr("value") + "<br/>"; if (!multiLine) { output += "# "; }
 	}
 	
-    if ($("#returnedType").attr("value") != "void" ) {
+    if ($("#return").attr("value") == "other") {
         output += "@result " + $("#returnedType").attr("value") + "<br/>"; if (!multiLine) { output += "# "; }
+    } else if ($("#return").attr("value") != "void") {
+        output += "@result " + $("#return").attr("value") + "<br/>"; if (!multiLine) { output += "# "; }
     }
+    
 	if (multiLine) { output += "<br/>*/"; } else { output += "<br/># */"; }
 	$("div.comments").html(output);
 }
@@ -122,22 +158,40 @@ function updateCode()
 }
 
 function updateObjCCode() {
-    var output = $("#type option:selected").text() + " (" + $("#returnedType").attr("value") + ")" + $("#fctName").attr("value");
+	console.log("updateObjCCode");
+	argumentTypes = [];
+	argumentArray = [];
+	labelArray = [];
+	
+	var typeMethod = $("#type option:selected").text();
+	(typeMethod == "-") ? isMemberMethod = true : isMemberMethod = false;
+	returnType = $("#return").attr("value");
+	if (returnType == "other") {
+		returnType = $("#returnedType").attr("value");
+	}
+	methodName = $("#fctName").attr("value");
+    var output = typeMethod + " (" + returnType + ")" + methodName;
 	
 	/* Arguments */
 	var i;
 	var tbodyArgs = $("tbody", $("#argTable"));
 	var nbItems = tbodyArgs[0].childElementCount;
+	labelArray.push("");
 	for (i=1; i < nbItems; i++) {
 		var currentRow = $("tr", tbodyArgs).eq(i);
+		labelArray[i] = $("#argLabel", currentRow).attr("value");
+		
 		output += $("#argLabel", currentRow).attr("value");
 		var argType = $("#argType", currentRow).attr("value");
 		if (argType == "other") {
 			output += ":(" + $("#argTypeCustom", currentRow).attr("value") + ")";
+			argumentTypes[i-1] = $("#argTypeCustom", currentRow).attr("value");
 		} else {
 			output += ":(" + $("#argType", currentRow).attr("value") + ")";
+			argumentTypes[i-1] = $("#argType", currentRow).attr("value");
 		}
 		output += $("#argName", currentRow).attr("value");
+		argumentArray[i-1] = $("#argName", currentRow).attr("value");
 		output += " ";
 	}
 	
@@ -175,6 +229,7 @@ function updateObjCCode() {
 }
 
 function updateCppCode() {
+	console.log("updateCppCode");
     var output = $("#returnedType").attr("value") + " " + $("#fctName").attr("value") + "(";
 	
 	/* Arguments */
@@ -204,6 +259,7 @@ function updateCppCode() {
 }
 
 function updateSnippet() {
+	console.log("updateSnippet");
 	updateHeaderDocs();
 	$("div.code").html(updateCode());
 }
@@ -246,10 +302,10 @@ function parseObjC(value) {
             argumentTypes[iterArg] = argTypes.substring(1, indexOfRightParenthesis);
             if (nextArg != -1) {
                 var tmp = argTypes.substring(indexOfRightParenthesis+1, nextArg);
-                var sLabel = tmp.search(/ /);
-                if (sLabel != -1 && sLabel < tmp.length - 1) {
-                    argumentArray[iterArg] = tmp.substring(0, sLabel);
-                    labelArray.push(tmp.substring(sLabel+1, nextArg));
+                var label = tmp.search(/ /);
+                if (label != -1 && label < tmp.length - 1) {
+                    argumentArray[iterArg] = tmp.substring(0, label);
+                    labelArray.push(tmp.substring(label+1, nextArg));
                 } else {
                     labelArray.push("none");
                     argumentArray[iterArg] = argTypes.substring(indexOfRightParenthesis+1, nextArg);
@@ -274,21 +330,12 @@ $("#returnedType").attr("value", $("#return").attr("value"));
 $(".ArgTemplate").hide();
 $(".ExcTemplate").hide();
 
+$("#RemoveArgs").hide();
+
 $(".DeleteArg").live("click", function(event){
 	$(this).closest("tr").remove();
 	updateSnippet();
-});
-
-$("#argName").live("change", function () {
-	updateSnippet();
-});
-
-$("#argType").live("change", function () {
-	updateSnippet();
-});
-
-$("#argLabel").live("change", function () {
-	updateSnippet();
+	updateMethodSource();
 });
 
 $("#argType").live("change", function() {
@@ -298,10 +345,12 @@ $("#argType").live("change", function() {
 		$("input[id='argTypeCustom']").hide();
 	}
 	updateSnippet();
+	updateMethodSource();
 });
 
 $("#argTypeCustom").live("change", function() {
      updateSnippet();
+     updateMethodSource();
      });
 
 $(".DeleteExc").live("click", function(event){
@@ -327,10 +376,12 @@ $("#return").change(function() {
 		$("input[id='returnedType']").hide();
 	}
 	updateSnippet();
+	updateMethodSource();
 });
 
 $("#type").change(function() {
 	updateSnippet();
+	updateMethodSource();
 });
 
 $("#addDiscussion").change(function() {
@@ -371,11 +422,7 @@ $("li[type=Button]").mousedown( function() {
 	var oldClass = $(this).attr("class");
 	var newClass = oldClass.substring(0, oldClass.length-3) + "dwn";
 	$(this).removeClass(oldClass);
-	$(this).addClass(newClass);
-	
-	addParameter($(this).attr("name"));
-	
-	updateSnippet();
+	$(this).addClass(newClass);	
 });
 
 $("li[type=Button]").mouseup( function() {
@@ -383,20 +430,35 @@ $("li[type=Button]").mouseup( function() {
 	var newClass = oldClass.substring(0, oldClass.length-3) + "ovr";
 	$(this).removeClass(oldClass);
 	$(this).addClass(newClass);
+	addParameter($(this).attr("name"));
+	updateSnippet();
+	updateMethodSource();
+	if (argumentArray.length > 0) {
+		$("#RemoveArgs").show();
+	}
 });
 
 $("input").live("change", function() {
-    updateSnippet();
-});
-
-updateSnippet();
-
-$("input[name='fctSource']").live("change", function() {
-	parseObjC($(this).attr("value"));
+	if ($(this).attr("id") == "fctSource") {
+		parseObjC($(this).attr("value"));
+	} else {
+		updateSnippet();
+		updateMethodSource();
+	}
+	var tbodyArgs = $("tbody", $("#argTable"));
+	if ($(this).attr("id") == "argLabel" && $(this).parent().parent().is($("tr", tbodyArgs).eq(1))) {
+		console.log("label: " + $(this).attr("value"));
+		$(this).attr("value","");
+	}
 });
 
 $("#RemoveArgs").click(function() {
 	removeArguments();
+	updateSnippet();
+	updateMethodSource();
+	$(this).hide();
 });
+
+updateSnippet();
 
 }
